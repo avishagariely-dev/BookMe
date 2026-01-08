@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/barberLoginFragment"
+        android:name="com.example.bookme.BarberLoginFragment"
+        android:label="fragment_barber_login"
+        tools:layout="@layout/fragment_barber_login" />
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.bookme.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_barberLoginFragment"
+            app:destination="@id/barberLoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientHomeFragment"
+        android:name="com.example.bookme.ClientHomeFragment"
+        android:label="fragment_client_home"
+        tools:layout="@layout/fragment_client_home" />
+</navigation>
