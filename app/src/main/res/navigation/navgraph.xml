@@ -9,7 +9,11 @@
         android:id="@+id/barberLoginFragment"
         android:name="com.example.bookme.BarberLoginFragment"
         android:label="fragment_barber_login"
-        tools:layout="@layout/fragment_barber_login" />
+        tools:layout="@layout/fragment_barber_login" >
+        <action
+            android:id="@+id/action_barberLoginFragment_to_barberHomeFragment"
+            app:destination="@id/barberHomeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.example.bookme.WelcomeFragment"
@@ -35,6 +39,28 @@
         android:id="@+id/clientBookFragment"
         android:name="com.example.bookme.ClientBookFragment"
         android:label="fragment_client_book"
+        tools:layout="@layout/fragment_client_book" />
+    <fragment
+        android:id="@+id/barberHomeFragment"
+        android:name="com.example.bookme.BarberHomeFragment"
+        android:label="fragment_barber_home"
+        tools:layout="@layout/fragment_barber_home" >
+        <action
+            android:id="@+id/action_barberHomeFragment_to_barberCalenderFragment"
+            app:destination="@id/barberCalenderFragment" />
+        <action
+            android:id="@+id/action_barberHomeFragment_to_blockTimeFragment"
+            app:destination="@id/blockTimeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/barberCalenderFragment"
+        android:name="com.example.bookme.BarberCalenderFragment"
+        android:label="BarberCalenderFragment" />
+    <fragment
+        android:id="@+id/blockTimeFragment"
+        android:name="com.example.bookme.BlockTimeFragment"
+        android:label="fragment_block_time"
+        tools:layout="@layout/fragment_block_time" />
         tools:layout="@layout/fragment_client_book" >
         <action
             android:id="@+id/action_clientBookFragment_to_paymentFragment"

@@ -6,10 +6,26 @@
     android:orientation="vertical"
     tools:context=".BarberLoginFragment">
 
-    <Button
-        android:id="@+id/button2"
+    <EditText
+        android:id="@+id/BarberEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="BARBER"
-        android:textSize="34sp" />
+        android:ems="10"
+        android:hint="Enter your e-mail"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/BarberPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Enter your password"
+        android:inputType="textPassword"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/Button_BarberLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login" />
 </LinearLayout>
