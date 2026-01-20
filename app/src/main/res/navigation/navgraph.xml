@@ -35,5 +35,14 @@
         android:id="@+id/clientBookFragment"
         android:name="com.example.bookme.ClientBookFragment"
         android:label="fragment_client_book"
-        tools:layout="@layout/fragment_client_book" />
+        tools:layout="@layout/fragment_client_book" >
+        <action
+            android:id="@+id/action_clientBookFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.bookme.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" />
 </navigation>

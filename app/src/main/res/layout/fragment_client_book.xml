@@ -44,4 +44,12 @@
         android:padding="12dp"
         android:minHeight="48dp"/>
 
+    <Button
+        android:id="@+id/ButtonToPay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:padding="12dp"
+        android:minHeight="48dp"/>
+
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 
 import android.app.DatePickerDialog;
 import java.util.Calendar;
+
+import android.widget.Button;
 import android.widget.EditText;
 
 
@@ -113,6 +116,13 @@ public class ClientBookFragment extends Fragment {
             tp.show();
         });
 
+        Button ButtonToPay = view.findViewById(R.id.ButtonToPay);
+        ButtonToPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.action_clientBookFragment_to_paymentFragment);
+            }
+        });
 
         return view;
     }
