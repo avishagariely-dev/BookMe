@@ -1,5 +1,6 @@
 package com.example.bookme;
 
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import android.app.DatePickerDialog;
+import java.util.Calendar;
+import android.widget.EditText;
+
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +65,56 @@ public class ClientBookFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_client_book, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_client_book, container, false);
+
+        EditText datePicker = view.findViewById(R.id.DatePicker);
+
+        datePicker.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog dp = new DatePickerDialog(
+                    requireContext(),
+                    (picker, y, m, d) -> {
+                        String chosenDate =
+                                String.format("%02d/%02d/%04d", d, (m + 1), y);
+                        datePicker.setText(chosenDate);
+                    },
+                    year, month, day
+            );
+
+            dp.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            dp.show();
+        });
+
+        EditText timePicker = view.findViewById(R.id.TimePicker);
+
+        timePicker.setOnClickListener(v -> {
+            Calendar c = Calendar.getInstance();
+
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            TimePickerDialog tp = new TimePickerDialog(
+                    requireContext(),
+                    (picker, h, m) -> {
+                        String chosenTime =
+                                String.format("%02d:%02d", h, m);
+                        timePicker.setText(chosenTime);
+                    },
+                    hour, minute,
+                    true
+            );
+
+            tp.show();
+        });
+
+
+        return view;
     }
+
 }

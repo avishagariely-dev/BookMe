@@ -6,52 +6,42 @@
     android:orientation="vertical"
     tools:context=".ClientBookFragment" >
 
-    <TextView
-        android:id="@+id/textView"
+    <Spinner
+        android:id="@+id/HaircutList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose appointment"
-        android:textSize="34sp" />
+        android:entries="@array/HaircutList"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:spinnerMode="dropdown" />
 
-    <Button
-        android:id="@+id/ButtonManHaircut"
+    <Spinner
+        android:id="@+id/BarberList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Man Haircut"
-        android:textSize="34sp" />
+        android:entries="@array/BarberList"
+        android:minHeight="48dp"
+        android:padding="12dp"
+        android:spinnerMode="dropdown" />
 
-    <Button
-        android:id="@+id/ButtonHaircutBeard"
+    <EditText
+        android:id="@+id/DatePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Haircut and Beard"
-        android:textSize="34sp" />
+        android:hint="Select a Date"
+        android:focusable="false"
+        android:clickable="true"
+        android:padding="12dp"
+        android:minHeight="48dp"/>
 
-    <Button
-        android:id="@+id/ButtonBeard"
+    <EditText
+        android:id="@+id/TimePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Beard Grooming"
-        android:textSize="34sp" />
+        android:hint="Select a Time"
+        android:focusable="false"
+        android:clickable="true"
+        android:padding="12dp"
+        android:minHeight="48dp"/>
 
-    <Button
-        android:id="@+id/ButtonWomanHaircut"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Woman Haircut"
-        android:textSize="34sp" />
-
-    <Button
-        android:id="@+id/ButtonColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Highlights or Color"
-        android:textSize="34sp" />
-
-    <Button
-        android:id="@+id/ButtonStraight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Straightening"
-        android:textSize="34sp" />
 </LinearLayout>

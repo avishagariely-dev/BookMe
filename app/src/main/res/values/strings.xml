@@ -2,4 +2,40 @@
     <string name="app_name">BookMe</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="HaircutList">
+        <item>Select a Haircut</item>
+        <item>Man Haircut</item>
+        <item>Haircut and Beard</item>
+        <item>Beard Grooming</item>
+        <item>Woman Haircut</item>
+        <item>Highlights</item>
+        <item>Straightening</item>
+    </string-array>
+
+    <string-array name="BarberList">
+        <item>Select a barber</item>
+        <item>David</item>
+        <item>Or</item>
+        <item>Netanel</item>
+        <item>Danilla</item>
+    </string-array>
+
+    <string-array name="DateList">
+        <item>Select a barber</item>
+        <item>David</item>
+        <item>Or</item>
+        <item>Netanel</item>
+        <item>Danilla</item>
+    </string-array>
+
+    <string-array name="TimeList">
+        <item>Select a barber</item>
+        <item>David</item>
+        <item>Or</item>
+        <item>Netanel</item>
+        <item>Danilla</item>
+    </string-array>
+
+
 </resources>
