@@ -7,9 +7,9 @@
     tools:context=".ClientHomeFragment">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/ButtonToBook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="CLIENT"
+        android:text="book appointment"
         android:textSize="34sp" />
 </LinearLayout>

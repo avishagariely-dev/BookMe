@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ClientBookFragment" >
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose appointment"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonManHaircut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Man Haircut"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonHaircutBeard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Haircut and Beard"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonBeard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Beard Grooming"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonWomanHaircut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Woman Haircut"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Highlights or Color"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonStraight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Straightening"
+        android:textSize="34sp" />
+</LinearLayout>

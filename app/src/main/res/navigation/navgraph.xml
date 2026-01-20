@@ -26,5 +26,14 @@
         android:id="@+id/clientHomeFragment"
         android:name="com.example.bookme.ClientHomeFragment"
         android:label="fragment_client_home"
-        tools:layout="@layout/fragment_client_home" />
+        tools:layout="@layout/fragment_client_home" >
+        <action
+            android:id="@+id/action_clientHomeFragment_to_clientBookFragment"
+            app:destination="@id/clientBookFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientBookFragment"
+        android:name="com.example.bookme.ClientBookFragment"
+        android:label="fragment_client_book"
+        tools:layout="@layout/fragment_client_book" />
 </navigation>
