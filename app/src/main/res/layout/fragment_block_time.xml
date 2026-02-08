@@ -8,7 +8,7 @@
     tools:context=".BlockTimeFragment">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvTitleBlockTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Block Time"
@@ -27,7 +27,7 @@
         android:text="Selected date:" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/tvLabelFrom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="From:" />
@@ -39,7 +39,7 @@
         android:text="Select start time" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/tvLabelTo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="To:" />

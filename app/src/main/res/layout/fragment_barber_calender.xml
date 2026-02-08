@@ -6,17 +6,43 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tvSelectedDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No date selected"
-        android:textSize="20sp"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/Button_PickDate"
+        android:id="@+id/tvCalenderTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pick a date" />
+        android:text="Calender" />
 
+    <Button
+        android:id="@+id/btnPickDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick a date:" />
+
+    <CalendarView
+        android:id="@+id/calenderViewBarber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvSelectedDateCalender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selected Date" />
+
+    <TextView
+        android:id="@+id/tvAppointmentsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Appointments for this date:" />
+
+    <TextView
+        android:id="@+id/tvAppointments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No appointments loaded" />
+
+    <Button
+        android:id="@+id/btnLoadAppointments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Load Appointments" />
 </LinearLayout>
