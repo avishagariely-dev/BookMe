@@ -9,16 +9,17 @@
         android:id="@+id/barberLoginFragment"
         android:name="com.example.bookme.BarberLoginFragment"
         android:label="fragment_barber_login"
-        tools:layout="@layout/fragment_barber_login" >
+        tools:layout="@layout/fragment_barber_login">
         <action
             android:id="@+id/action_barberLoginFragment_to_barberHomeFragment"
             app:destination="@id/barberHomeFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.example.bookme.WelcomeFragment"
         android:label="fragment_welcome"
-        tools:layout="@layout/fragment_welcome" >
+        tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_welcomeFragment_to_clientHomeFragment"
             app:destination="@id/clientHomeFragment" />
@@ -26,25 +27,35 @@
             android:id="@+id/action_welcomeFragment_to_barberLoginFragment"
             app:destination="@id/barberLoginFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/clientHomeFragment"
         android:name="com.example.bookme.ClientHomeFragment"
         android:label="fragment_client_home"
-        tools:layout="@layout/fragment_client_home" >
+        tools:layout="@layout/fragment_client_home">
         <action
             android:id="@+id/action_clientHomeFragment_to_clientBookFragment"
             app:destination="@id/clientBookFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/clientBookFragment"
         android:name="com.example.bookme.ClientBookFragment"
         android:label="fragment_client_book"
-        tools:layout="@layout/fragment_client_book" />
+        tools:layout="@layout/fragment_client_book">
+        <action
+            android:id="@+id/action_clientBookFragment_to_paymentFragment2"
+            app:destination="@id/paymentFragment2" />
+        <action
+            android:id="@+id/action_clientBookFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+
     <fragment
         android:id="@+id/barberHomeFragment"
         android:name="com.example.bookme.BarberHomeFragment"
         android:label="fragment_barber_home"
-        tools:layout="@layout/fragment_barber_home" >
+        tools:layout="@layout/fragment_barber_home">
         <action
             android:id="@+id/action_barberHomeFragment_to_barberCalenderFragment"
             app:destination="@id/barberCalenderFragment" />
@@ -52,23 +63,28 @@
             android:id="@+id/action_barberHomeFragment_to_blockTimeFragment"
             app:destination="@id/blockTimeFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/barberCalenderFragment"
         android:name="com.example.bookme.BarberCalenderFragment"
         android:label="BarberCalenderFragment" />
+
     <fragment
         android:id="@+id/blockTimeFragment"
         android:name="com.example.bookme.BlockTimeFragment"
         android:label="fragment_block_time"
         tools:layout="@layout/fragment_block_time" />
-        tools:layout="@layout/fragment_client_book" >
-        <action
-            android:id="@+id/action_clientBookFragment_to_paymentFragment"
-            app:destination="@id/paymentFragment" />
-    </fragment>
+
+    <fragment
+        android:id="@+id/paymentFragment2"
+        android:name="com.example.bookme.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" />
+
     <fragment
         android:id="@+id/paymentFragment"
         android:name="com.example.bookme.PaymentFragment"
         android:label="fragment_payment"
         tools:layout="@layout/fragment_payment" />
+
 </navigation>

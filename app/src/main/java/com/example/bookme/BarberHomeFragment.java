@@ -92,10 +92,6 @@ public class BarberHomeFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_barberHomeFragment_to_blockTimeFragment));
 
-        logoutBtn.setOnClickListener(v ->
-                Navigation.findNavController(view)
-                        .navigate(R.id.action_barberHomeFragment_to_barberLoginFragment));
-
         return view;
 
     }
