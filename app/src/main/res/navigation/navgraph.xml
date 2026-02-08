@@ -44,9 +44,6 @@
         android:label="fragment_client_book"
         tools:layout="@layout/fragment_client_book">
         <action
-            android:id="@+id/action_clientBookFragment_to_paymentFragment2"
-            app:destination="@id/paymentFragment2" />
-        <action
             android:id="@+id/action_clientBookFragment_to_paymentFragment"
             app:destination="@id/paymentFragment" />
     </fragment>
@@ -74,12 +71,6 @@
         android:name="com.example.bookme.BlockTimeFragment"
         android:label="fragment_block_time"
         tools:layout="@layout/fragment_block_time" />
-
-    <fragment
-        android:id="@+id/paymentFragment2"
-        android:name="com.example.bookme.PaymentFragment"
-        android:label="fragment_payment"
-        tools:layout="@layout/fragment_payment" />
 
     <fragment
         android:id="@+id/paymentFragment"
