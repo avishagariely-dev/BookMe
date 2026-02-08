@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/ivCheck"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/check_circle_outline"
+        app:tint="#4CAF50"
+        android:contentDescription="Success" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The appointment was successfully scheduled!"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:textColor="#000000"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/tvConfirmationDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="פרטי התור יופיעו כאן"
+        android:textAlignment="center"
+        android:layout_marginTop="12dp"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/btnConfirmClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#6200EE"
+        android:text="close" /> </LinearLayout>
