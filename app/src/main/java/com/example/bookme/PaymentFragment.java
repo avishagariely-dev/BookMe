@@ -13,11 +13,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
 import java.util.HashMap;
 import java.util.Map;
-import android.widget.Toast;
 
 public class PaymentFragment extends Fragment {
 
@@ -35,13 +39,15 @@ public class PaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        EditText etName = view.findViewById(R.id.Name); // ודאי שה-ID תואם ל-XML שלך
-        EditText etPhone = view.findViewById(R.id.editTextPhone);
-        EditText etCard = view.findViewById(R.id.CardNumber);
-        EditText etCvc = view.findViewById(R.id.CVC);
-        EditText etExpiry = view.findViewById(R.id.Expiry);
+        // 1. אתחול רכיבים כ-final כדי שיהיו נגישים בתוך הטרנזקציה
+        final EditText etName = view.findViewById(R.id.Name);
+        final EditText etPhone = view.findViewById(R.id.editTextPhone);
+        final EditText etCard = view.findViewById(R.id.CardNumber);
+        final EditText etCvc = view.findViewById(R.id.CVC);
+        final EditText etExpiry = view.findViewById(R.id.Expiry);
+        final Button btnFinish = view.findViewById(R.id.ButtonConfirm);
 
-        // 1. שליפת הנתונים מה-Bundle (הוספנו גם את barberId)
+        // 2. שליפת הנתונים מה-Bundle
         String date = "N/A";
         String time = "N/A";
         String barberId = "N/A";
@@ -52,77 +58,84 @@ public class PaymentFragment extends Fragment {
             barberId = getArguments().getString("barberId", "N/A");
         }
 
-        EditText expiry = view.findViewById(R.id.Expiry);
-        expiry.setOnClickListener(v -> showExpiryPicker(expiry));
-
-        Button btnFinish = view.findViewById(R.id.ButtonConfirm);
-
         final String finalDate = date;
         final String finalTime = time;
         final String finalBarberId = barberId;
 
+        // הגדרת בחירת תוקף
+        etExpiry.setOnClickListener(v -> showExpiryPicker(etExpiry));
+
         if (btnFinish != null) {
             btnFinish.setOnClickListener(v -> {
-                // 1. קריאה לפונקציית הולידציה שיצרת
-                if (!validateInputs(etName, etPhone, etCard, etCvc, etExpiry)) {
-                    // אם הנתונים לא תקינים, הפונקציה תציג שגיאה בשדות ותעצור כאן
-                    return;
-                }
+                // בדיקת תקינות קלט
+                if (!validateInputs(etName, etPhone, etCard, etCvc, etExpiry)) return;
 
-                // 2. רק אם הכל תקין - שמירה ל-Firebase
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                Map<String, Object> appointment = new HashMap<>();
-                appointment.put("barberId", finalBarberId);
-                appointment.put("date", finalDate);
-                appointment.put("time", finalTime);
-                appointment.put("status", "BOOKED");
+                // יצירת מזהה ייחודי לתור למניעת כפל תורים
+                String slotId = finalBarberId + "_" + finalDate.replace("/", "-") + "_" + finalTime.replace(":", "-");
+                final DocumentReference appointmentRef = db.collection("appointments").document(slotId);
 
-                // שליפת הערכים האמיתיים מהשדות במקום הנתונים הקבועים ("Guest Client")
-                appointment.put("clientName", etName.getText().toString().trim());
-                appointment.put("clientPhone", etPhone.getText().toString().trim());
+                // ביצוע הטרנזקציה
+                db.runTransaction(transaction -> {
+                    DocumentSnapshot snapshot = transaction.get(appointmentRef);
 
-                db.collection("appointments").add(appointment)
-                        .addOnSuccessListener(documentReference -> {
-                            String message = "Looking forward to seeing you on " + finalDate + " at " + finalTime;
-                            showConfirmationDialog(message);
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
+                    // בדיקה אם התור כבר נתפס
+                    if (snapshot.exists()) {
+                        throw new FirebaseFirestoreException("This slot is already taken!",
+                                FirebaseFirestoreException.Code.ABORTED);
+                    }
+
+                    // הכנת הנתונים לשמירה
+                    Map<String, Object> appointment = new HashMap<>();
+                    appointment.put("barberId", finalBarberId);
+                    appointment.put("date", finalDate);
+                    appointment.put("time", finalTime);
+                    appointment.put("clientName", etName.getText().toString().trim());
+                    appointment.put("clientPhone", etPhone.getText().toString().trim());
+                    appointment.put("status", "BOOKED");
+
+                    // שמירה בתוך הטרנזקציה
+                    transaction.set(appointmentRef, appointment);
+                    return null;
+                }).addOnSuccessListener(aVoid -> {
+                    showConfirmationDialog("Appointment confirmed for " + finalDate + " at " + finalTime);
+                }).addOnFailureListener(e -> {
+                    if (e.getMessage() != null && e.getMessage().contains("already taken")) {
+                        Toast.makeText(getContext(), "Oops! Someone just took this slot.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
         }
     }
 
+    // ולידציה על שדות הקלט
     private boolean validateInputs(EditText etName, EditText etPhone, EditText etCard, EditText etCvc, EditText etExpiry) {
         boolean isValid = true;
 
-        // בדיקת שם
         if (etName.getText().toString().trim().isEmpty()) {
             etName.setError("Name is required");
             isValid = false;
         }
 
-        // בדיקת טלפון - בדיוק 10 ספרות
         String phone = etPhone.getText().toString().trim();
         if (phone.length() != 10) {
             etPhone.setError("Phone must be 10 digits");
             isValid = false;
         }
 
-        // בדיקת כרטיס אשראי - לפחות 16 ספרות
         if (etCard.getText().toString().trim().length() < 16) {
             etCard.setError("Invalid card number");
             isValid = false;
         }
 
-        // בדיקת CVC - בדיוק 3 ספרות
         if (etCvc.getText().toString().trim().length() != 3) {
             etCvc.setError("CVC must be 3 digits");
             isValid = false;
         }
 
-        // בדיקת תוקף
         if (etExpiry.getText().toString().trim().isEmpty()) {
             etExpiry.setError("Select expiry date");
             isValid = false;
@@ -131,10 +144,7 @@ public class PaymentFragment extends Fragment {
         return isValid;
     }
 
-    // ... (שאר הפונקציות: showExpiryPicker ו-showConfirmationDialog נשארות אותו דבר) ...
-
     private void showExpiryPicker(EditText etExpiry) {
-        // (הקוד הקודם שלך נשאר כאן ללא שינוי)
         android.widget.NumberPicker monthPicker = new android.widget.NumberPicker(requireContext());
         android.widget.NumberPicker yearPicker  = new android.widget.NumberPicker(requireContext());
         monthPicker.setMinValue(1);
