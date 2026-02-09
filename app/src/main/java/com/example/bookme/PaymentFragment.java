@@ -14,6 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
+import android.widget.Toast;
+
 public class PaymentFragment extends Fragment {
 
     public PaymentFragment() {
@@ -30,32 +35,54 @@ public class PaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. שליפת הנתונים מה-Bundle שנשלח מהמסך הקודם
+        // 1. שליפת הנתונים מה-Bundle (הוספנו גם את barberId)
         String date = "N/A";
         String time = "N/A";
+        String barberId = "N/A";
 
         if (getArguments() != null) {
             date = getArguments().getString("date", "N/A");
             time = getArguments().getString("time", "N/A");
+            barberId = getArguments().getString("barberId", "N/A");
         }
 
-        // 2. טיפול בבחירת תוקף הכרטיס (מה שכבר היה לך)
         EditText expiry = view.findViewById(R.id.Expiry);
         expiry.setOnClickListener(v -> showExpiryPicker(expiry));
 
-        // 3. טיפול בכפתור האישור
         Button btnFinish = view.findViewById(R.id.ButtonConfirm);
 
-        // הגדרת משתנים סופיים לשימוש בתוך ה-Lambda
         final String finalDate = date;
         final String finalTime = time;
+        final String finalBarberId = barberId;
 
         if (btnFinish != null) {
             btnFinish.setOnClickListener(v -> {
-                // יצירת הודעה מותאמת אישית עם התאריך והשעה האמיתיים
-                String message = "Looking forward to seeing you on " + finalDate + " at " + finalTime;
 
-                showConfirmationDialog(message);
+                // --- תחילת שלב 4: שמירה ל-Firebase ---
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                // יצירת מפת הנתונים לפי המבנה שראינו ב-Console שלך
+                Map<String, Object> appointment = new HashMap<>();
+                appointment.put("barberId", finalBarberId);
+                appointment.put("date", finalDate);
+                appointment.put("time", finalTime);
+                appointment.put("status", "BOOKED");
+                appointment.put("clientName", "Guest Client"); // תוכלי להחליף ב-EditText אם יש
+                appointment.put("clientPhone", "0500000000"); // כנ"ל
+
+                // הוספת המסמך לאוסף appointments
+                db.collection("appointments").add(appointment)
+                        .addOnSuccessListener(documentReference -> {
+                            // הצלחה: רק עכשיו מציגים את דיאלוג האישור
+                            String message = "Looking forward to seeing you on " + finalDate + " at " + finalTime;
+                            showConfirmationDialog(message);
+                        })
+                        .addOnFailureListener(e -> {
+                            // שגיאה: למשל אם אין אינטרנט או בעיית הרשאות
+                            Toast.makeText(getContext(), "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                // --- סוף שלב 4 ---
+
             });
         }
     }
