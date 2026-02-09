@@ -35,6 +35,12 @@ public class PaymentFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        EditText etName = view.findViewById(R.id.Name); // ודאי שה-ID תואם ל-XML שלך
+        EditText etPhone = view.findViewById(R.id.editTextPhone);
+        EditText etCard = view.findViewById(R.id.CardNumber);
+        EditText etCvc = view.findViewById(R.id.CVC);
+        EditText etExpiry = view.findViewById(R.id.Expiry);
+
         // 1. שליפת הנתונים מה-Bundle (הוספנו גם את barberId)
         String date = "N/A";
         String time = "N/A";
@@ -57,34 +63,72 @@ public class PaymentFragment extends Fragment {
 
         if (btnFinish != null) {
             btnFinish.setOnClickListener(v -> {
+                // 1. קריאה לפונקציית הולידציה שיצרת
+                if (!validateInputs(etName, etPhone, etCard, etCvc, etExpiry)) {
+                    // אם הנתונים לא תקינים, הפונקציה תציג שגיאה בשדות ותעצור כאן
+                    return;
+                }
 
-                // --- תחילת שלב 4: שמירה ל-Firebase ---
+                // 2. רק אם הכל תקין - שמירה ל-Firebase
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                // יצירת מפת הנתונים לפי המבנה שראינו ב-Console שלך
                 Map<String, Object> appointment = new HashMap<>();
                 appointment.put("barberId", finalBarberId);
                 appointment.put("date", finalDate);
                 appointment.put("time", finalTime);
                 appointment.put("status", "BOOKED");
-                appointment.put("clientName", "Guest Client"); // תוכלי להחליף ב-EditText אם יש
-                appointment.put("clientPhone", "0500000000"); // כנ"ל
 
-                // הוספת המסמך לאוסף appointments
+                // שליפת הערכים האמיתיים מהשדות במקום הנתונים הקבועים ("Guest Client")
+                appointment.put("clientName", etName.getText().toString().trim());
+                appointment.put("clientPhone", etPhone.getText().toString().trim());
+
                 db.collection("appointments").add(appointment)
                         .addOnSuccessListener(documentReference -> {
-                            // הצלחה: רק עכשיו מציגים את דיאלוג האישור
                             String message = "Looking forward to seeing you on " + finalDate + " at " + finalTime;
                             showConfirmationDialog(message);
                         })
                         .addOnFailureListener(e -> {
-                            // שגיאה: למשל אם אין אינטרנט או בעיית הרשאות
                             Toast.makeText(getContext(), "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
-                // --- סוף שלב 4 ---
-
             });
         }
+    }
+
+    private boolean validateInputs(EditText etName, EditText etPhone, EditText etCard, EditText etCvc, EditText etExpiry) {
+        boolean isValid = true;
+
+        // בדיקת שם
+        if (etName.getText().toString().trim().isEmpty()) {
+            etName.setError("Name is required");
+            isValid = false;
+        }
+
+        // בדיקת טלפון - בדיוק 10 ספרות
+        String phone = etPhone.getText().toString().trim();
+        if (phone.length() != 10) {
+            etPhone.setError("Phone must be 10 digits");
+            isValid = false;
+        }
+
+        // בדיקת כרטיס אשראי - לפחות 16 ספרות
+        if (etCard.getText().toString().trim().length() < 16) {
+            etCard.setError("Invalid card number");
+            isValid = false;
+        }
+
+        // בדיקת CVC - בדיוק 3 ספרות
+        if (etCvc.getText().toString().trim().length() != 3) {
+            etCvc.setError("CVC must be 3 digits");
+            isValid = false;
+        }
+
+        // בדיקת תוקף
+        if (etExpiry.getText().toString().trim().isEmpty()) {
+            etExpiry.setError("Select expiry date");
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     // ... (שאר הפונקציות: showExpiryPicker ו-showConfirmationDialog נשארות אותו דבר) ...
