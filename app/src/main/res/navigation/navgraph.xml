@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_clientHomeFragment_to_clientBookFragment"
             app:destination="@id/clientBookFragment" />
+        <action
+            android:id="@+id/action_clientHomeFragment_to_clientCancelFragment"
+            app:destination="@id/clientCancelFragment" />
     </fragment>
 
     <fragment
@@ -79,6 +82,15 @@
         tools:layout="@layout/fragment_payment" >
         <action
             android:id="@+id/action_paymentFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientCancelFragment"
+        android:name="com.example.bookme.ClientCancelFragment"
+        android:label="fragment_client_cancel"
+        tools:layout="@layout/fragment_client_cancel" >
+        <action
+            android:id="@+id/action_clientCancelFragment_to_clientHomeFragment"
             app:destination="@id/clientHomeFragment" />
     </fragment>
 

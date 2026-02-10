@@ -17,6 +17,7 @@
         android:contentDescription="Success" />
 
     <TextView
+        android:id="@+id/tvConfirmationTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="The appointment was successfully scheduled!"

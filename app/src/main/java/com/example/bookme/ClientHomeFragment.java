@@ -71,6 +71,14 @@ public class ClientHomeFragment extends Fragment {
             }
         });
 
+        Button ButtonToCancel = view.findViewById(R.id.ButtonToCancel);
+        ButtonToCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.action_clientHomeFragment_to_clientCancelFragment);
+            }
+        });
+
         return view;
     }
 }

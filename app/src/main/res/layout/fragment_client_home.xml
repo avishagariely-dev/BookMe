@@ -10,6 +10,13 @@
         android:id="@+id/ButtonToBook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="book appointment"
+        android:text="Book Appointment"
+        android:textSize="34sp" />
+
+    <Button
+        android:id="@+id/ButtonToCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel Appointment"
         android:textSize="34sp" />
 </LinearLayout>

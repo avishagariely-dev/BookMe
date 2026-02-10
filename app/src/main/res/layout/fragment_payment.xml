@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:focusable="true"
-                android:hint="Name"
+                android:hint="Full Name"
                 android:inputType="text"
                 android:textSize="20sp" />
 

@@ -115,8 +115,14 @@ public class PaymentFragment extends Fragment {
     private boolean validateInputs(EditText etName, EditText etPhone, EditText etCard, EditText etCvc, EditText etExpiry) {
         boolean isValid = true;
 
-        if (etName.getText().toString().trim().isEmpty()) {
-            etName.setError("Name is required");
+        // בדיקת שם מלא (לפחות שני שמות)
+        String fullName = etName.getText().toString().trim();
+        if (fullName.isEmpty()) {
+            etName.setError("Full name is required");
+            isValid = false;
+        } else if (!fullName.contains(" ")) {
+            // בדיקה שיש לפחות רווח אחד בין השמות
+            etName.setError("Please enter your full name (First and Last name)");
             isValid = false;
         }
 
