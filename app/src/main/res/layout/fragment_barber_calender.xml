@@ -9,36 +9,24 @@
         android:id="@+id/tvCalenderTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calender" />
+        android:text="Calendar"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingBottom="12dp"/>
 
     <Button
         android:id="@+id/btnPickDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pick a date:" />
-
-    <CalendarView
-        android:id="@+id/calenderViewBarber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:text="Pick a date" />
 
     <TextView
         android:id="@+id/tvSelectedDateCalender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selected Date" />
-
-    <TextView
-        android:id="@+id/tvAppointmentsTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Appointments for this date:" />
-
-    <TextView
-        android:id="@+id/tvAppointments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No appointments loaded" />
+        android:text="Selected Date: -"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"/>
 
     <Button
         android:id="@+id/btnLoadAppointments"
@@ -49,6 +37,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAppointments"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp" />
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1" />
+
 </LinearLayout>

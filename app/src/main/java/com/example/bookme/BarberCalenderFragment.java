@@ -15,30 +15,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class BarberCalenderFragment extends Fragment {
 
-    // 1. הגדרת המשתנים שיופיעו בכל רחבי המחלקה
-    private AppointmentAdapter adapter;
     private FirebaseFirestore db;
-    private String currentBarberUid;
-
-    public BarberCalenderFragment() {
-        // Required empty public constructor
-    }
+    private AppointmentAdapter adapter;
+    private TextView tvSelectedDate;
+    private String selectedDateKey = null;
+    private String currentBarberId = Session.barberName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // ניפוח ה-Layout
         return inflater.inflate(R.layout.fragment_barber_calender, container, false);
     }
 
@@ -46,23 +41,17 @@ public class BarberCalenderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 2. אתחול רכיבי ה-UI
-        TextView tvSelectedDate = view.findViewById(R.id.tvSelectedDateCalender);
-        Button btnPickDate = view.findViewById(R.id.btnPickDate);
-        RecyclerView rvAppointments = view.findViewById(R.id.rvAppointments);
-
-        // 3. הגדרת ה-RecyclerView וה-Adapter
         db = FirebaseFirestore.getInstance();
+
+        tvSelectedDate = view.findViewById(R.id.tvSelectedDateCalender);
+        Button btnPickDate = view.findViewById(R.id.btnPickDate);
+        Button btnLoadAppointments = view.findViewById(R.id.btnLoadAppointments);
+
+        RecyclerView rvAppointments = view.findViewById(R.id.rvAppointments);
         adapter = new AppointmentAdapter();
         rvAppointments.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvAppointments.setAdapter(adapter);
 
-        // שליפת ה-ID של הספר המחובר (כדי שיראה רק את שלו)
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            currentBarberUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        }
-
-        // 4. לוגיקה לבחירת תאריך והצגת נתונים
         btnPickDate.setOnClickListener(v -> {
             MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Select date")
@@ -71,36 +60,34 @@ public class BarberCalenderFragment extends Fragment {
             picker.show(getParentFragmentManager(), "DATE_PICKER");
 
             picker.addOnPositiveButtonClickListener(selection -> {
-                // המרת הבחירה לפורמט טקסט קריא וגם לפורמט שתואם ל-Firebase
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                String dateForFirebase = sdf.format(new Date(selection));
-
-                tvSelectedDate.setText("Appointments for: " + dateForFirebase);
-
-                // קריאה לפונקציית השליפה מ-Firebase
-                loadAppointments(dateForFirebase);
+                selectedDateKey = formatDateDdMmYyyy(selection); // "11/02/2026"
+                tvSelectedDate.setText("Selected Date: " + selectedDateKey);
             });
+        });
+
+        btnLoadAppointments.setOnClickListener(v -> {
+            if (selectedDateKey == null) {
+                Toast.makeText(getContext(), "Pick a date first", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            loadAppointments(selectedDateKey);
         });
     }
 
-    // 5. הפונקציה שמאזינה לשינויים ב-Firebase בזמן אמת
-    private void loadAppointments(String selectedDate) {
-        if (currentBarberUid == null) return;
-
+    private void loadAppointments(String dateKey) {
         db.collection("appointments")
-                .whereEqualTo("barberId", currentBarberUid) // סינון לפי הספר
-                .whereEqualTo("date", selectedDate)        // סינון לפי התאריך
-                .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        Toast.makeText(getContext(), "Error loading data", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (value != null) {
-                        // המרת הנתונים לאובייקטים של Java ועדכון ה-Adapter
-                        List<Appointment> list = value.toObjects(Appointment.class);
-                        adapter.setAppointments(list);
-                    }
+                .whereEqualTo("barberId", currentBarberId)
+                .whereEqualTo("date", dateKey)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Appointment> list = querySnapshot.toObjects(Appointment.class);
+                    adapter.setAppointments(list);
                 });
+    }
+
+    private String formatDateDdMmYyyy(long millisUtc) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(new Date(millisUtc));
     }
 }

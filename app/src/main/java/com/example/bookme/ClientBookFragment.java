@@ -105,6 +105,7 @@ public class ClientBookFragment extends Fragment {
             bundle.putString("date", selectedDate);
             bundle.putString("time", selectedTime);
             bundle.putString("barberId", barberSpinner.getSelectedItem().toString());
+            bundle.putString("type", haircutSpinner.getSelectedItem().toString());
 
             Navigation.findNavController(view).navigate(R.id.action_clientBookFragment_to_paymentFragment, bundle);
         });

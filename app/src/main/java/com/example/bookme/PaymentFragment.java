@@ -51,16 +51,19 @@ public class PaymentFragment extends Fragment {
         String date = "N/A";
         String time = "N/A";
         String barberId = "N/A";
+        String type = "N/A";
 
         if (getArguments() != null) {
             date = getArguments().getString("date", "N/A");
             time = getArguments().getString("time", "N/A");
             barberId = getArguments().getString("barberId", "N/A");
+            type = getArguments().getString("type", "N/A");
         }
 
         final String finalDate = date;
         final String finalTime = time;
         final String finalBarberId = barberId;
+        final String finalType = type;
 
         // הגדרת בחירת תוקף
         etExpiry.setOnClickListener(v -> showExpiryPicker(etExpiry));
@@ -94,6 +97,7 @@ public class PaymentFragment extends Fragment {
                     appointment.put("clientName", etName.getText().toString().trim());
                     appointment.put("clientPhone", etPhone.getText().toString().trim());
                     appointment.put("status", "BOOKED");
+                    appointment.put("type", finalType);
 
                     // שמירה בתוך הטרנזקציה
                     transaction.set(appointmentRef, appointment);

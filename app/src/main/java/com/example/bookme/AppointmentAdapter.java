@@ -33,7 +33,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         Appointment appointment = appointmentList.get(position);
         holder.tvTime.setText(appointment.getTime());
         holder.tvClientName.setText(appointment.getClientName());
-        holder.tvStatus.setText("Status: " + appointment.getStatus());
+        holder.tvStatus.setText(appointment.getType());
     }
 
     @Override
