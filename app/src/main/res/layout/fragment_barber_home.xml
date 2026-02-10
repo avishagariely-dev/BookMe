@@ -4,43 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".BarberHomeFragment">
 
     <TextView
+        android:id="@+id/tvWelcomeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome Barber"
-        android:textSize="34sp" />
+        android:text="Welcome"
+        android:textSize="34sp"
+        android:layout_marginBottom="16dp"
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Appointments for today:"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTodayAppointments"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="(Appointments will appear here) " />
-
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:id="@+id/Button_BarberCalender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View Calender" />
-
-    <Button
-        android:id="@+id/Button_Block"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Block Time" />
+        android:text="View Calender"
+        android:layout_marginBottom="8dp" />
 
     <Button
         android:id="@+id/Button_Logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Logout" />
+
 </LinearLayout>

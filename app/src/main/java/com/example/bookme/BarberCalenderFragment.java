@@ -5,89 +5,139 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import com.google.firebase.firestore.Query;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class BarberCalenderFragment extends Fragment {
 
     private FirebaseFirestore db;
     private AppointmentAdapter adapter;
-    private TextView tvSelectedDate;
     private String selectedDateKey = null;
-    private String currentBarberId = Session.barberName;
+    private String startTime = "09:00", endTime = "10:00";
+    private boolean isAllDay = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_barber_calender, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         db = FirebaseFirestore.getInstance();
 
-        tvSelectedDate = view.findViewById(R.id.tvSelectedDateCalender);
         Button btnPickDate = view.findViewById(R.id.btnPickDate);
-        Button btnLoadAppointments = view.findViewById(R.id.btnLoadAppointments);
+        TextView tvSelectedDate = view.findViewById(R.id.tvSelectedDateCalender);
+        LinearLayout layoutActions = view.findViewById(R.id.layoutActions);
+        Button btnView = view.findViewById(R.id.btnViewAppointments);
+        Button btnOpenBlock = view.findViewById(R.id.btnOpenBlockUI);
+        View layoutBlockingUI = view.findViewById(R.id.layoutBlockingUI);
 
-        RecyclerView rvAppointments = view.findViewById(R.id.rvAppointments);
+        RecyclerView rv = view.findViewById(R.id.rvAppointments);
         adapter = new AppointmentAdapter();
-        rvAppointments.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rvAppointments.setAdapter(adapter);
+        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rv.setAdapter(adapter);
 
         btnPickDate.setOnClickListener(v -> {
-            MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select date")
-                    .build();
-
-            picker.show(getParentFragmentManager(), "DATE_PICKER");
-
+            MaterialDatePicker<Long> picker = MaterialDatePicker.Builder.datePicker().build();
+            picker.show(getParentFragmentManager(), "DATE");
             picker.addOnPositiveButtonClickListener(selection -> {
-                selectedDateKey = formatDateDdMmYyyy(selection); // "11/02/2026"
+                selectedDateKey = formatDate(selection);
                 tvSelectedDate.setText("Selected Date: " + selectedDateKey);
+                layoutActions.setVisibility(View.VISIBLE);
+                layoutBlockingUI.setVisibility(View.GONE);
+                adapter.setAppointments(new java.util.ArrayList<>());
             });
         });
 
-        btnLoadAppointments.setOnClickListener(v -> {
-            if (selectedDateKey == null) {
-                Toast.makeText(getContext(), "Pick a date first", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        btnView.setOnClickListener(v -> {
+            layoutBlockingUI.setVisibility(View.GONE);
             loadAppointments(selectedDateKey);
+        });
+
+        btnOpenBlock.setOnClickListener(v -> layoutBlockingUI.setVisibility(View.VISIBLE));
+
+        setupBlockUI(view);
+    }
+
+    private void setupBlockUI(View view) {
+        SwitchMaterial switchAllDay = view.findViewById(R.id.switchAllDay);
+        LinearLayout layoutTimePicker = view.findViewById(R.id.layoutTimePicker);
+        Button btnStart = view.findViewById(R.id.btnStartTime);
+        Button btnEnd = view.findViewById(R.id.btnEndTime);
+        Button btnSubmit = view.findViewById(R.id.btnSubmitBlock);
+
+        switchAllDay.setOnCheckedChangeListener((b, checked) -> {
+            isAllDay = checked;
+            layoutTimePicker.setVisibility(checked ? View.GONE : View.VISIBLE);
+        });
+
+        btnStart.setOnClickListener(v -> showTimePicker(true, btnStart));
+        btnEnd.setOnClickListener(v -> showTimePicker(false, btnEnd));
+        btnSubmit.setOnClickListener(v -> saveBlock());
+    }
+
+    private void showTimePicker(boolean isStart, Button btn) {
+        MaterialTimePicker picker = new MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_24H).build();
+        picker.show(getParentFragmentManager(), "TIME");
+        picker.addOnPositiveButtonClickListener(v -> {
+            String time = String.format(Locale.getDefault(), "%02d:%02d", picker.getHour(), picker.getMinute());
+            if (isStart) startTime = time; else endTime = time;
+            btn.setText(time);
         });
     }
 
-    private void loadAppointments(String dateKey) {
-        db.collection("appointments")
-                .whereEqualTo("barberId", currentBarberId)
-                .whereEqualTo("date", dateKey)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Appointment> list = querySnapshot.toObjects(Appointment.class);
-                    adapter.setAppointments(list);
-                });
+    private void saveBlock() {
+        if (selectedDateKey == null) {
+            Toast.makeText(getContext(), "Please pick a date first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Map<String, Object> block = new HashMap<>();
+        block.put("barberId", Session.barberName);
+        block.put("date", selectedDateKey);
+        block.put("isBlocked", true);
+        block.put("time", isAllDay ? "All Day" : startTime + " - " + endTime);
+        block.put("clientName", "BLOCKED");
+
+        db.collection("appointments").add(block).addOnSuccessListener(doc -> {
+            Toast.makeText(getContext(), "Time Blocked!", Toast.LENGTH_SHORT).show();
+            loadAppointments(selectedDateKey);
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
     }
 
-    private String formatDateDdMmYyyy(long millisUtc) {
+    private void loadAppointments(String date) {
+        db.collection("appointments")
+                .whereEqualTo("barberId", Session.barberName)
+                .whereEqualTo("date", date)
+                .orderBy("time", Query.Direction.ASCENDING) // הוספתי מיון לפי שעה
+                .get()
+                .addOnSuccessListener(qs -> adapter.setAppointments(qs.toObjects(Appointment.class)));
+    }
+
+    private String formatDate(long millis) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return sdf.format(new Date(millisUtc));
+        return sdf.format(new Date(millis));
     }
 }
