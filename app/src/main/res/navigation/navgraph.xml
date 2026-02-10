@@ -21,11 +21,11 @@
         android:label="fragment_welcome"
         tools:layout="@layout/fragment_welcome">
         <action
-            android:id="@+id/action_welcomeFragment_to_clientHomeFragment"
-            app:destination="@id/clientHomeFragment" />
-        <action
             android:id="@+id/action_welcomeFragment_to_barberLoginFragment"
             app:destination="@id/barberLoginFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_clientLoginFragment"
+            app:destination="@id/clientLoginFragment" />
     </fragment>
 
     <fragment
@@ -91,6 +91,15 @@
         tools:layout="@layout/fragment_client_cancel" >
         <action
             android:id="@+id/action_clientCancelFragment_to_clientHomeFragment"
+            app:destination="@id/clientHomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientLoginFragment"
+        android:name="com.example.bookme.ClientLoginFragment"
+        android:label="fragment_client_login"
+        tools:layout="@layout/fragment_client_login" >
+        <action
+            android:id="@+id/action_clientLoginFragment_to_clientHomeFragment"
             app:destination="@id/clientHomeFragment" />
     </fragment>
 

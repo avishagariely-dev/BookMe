@@ -20,23 +20,7 @@
         <item>David</item>
         <item>Or</item>
         <item>Netanel</item>
-        <item>Danilla</item>
-    </string-array>
-
-    <string-array name="DateList">
-        <item>Select a barber</item>
-        <item>David</item>
-        <item>Or</item>
-        <item>Netanel</item>
-        <item>Danilla</item>
-    </string-array>
-
-    <string-array name="TimeList">
-        <item>Select a barber</item>
-        <item>David</item>
-        <item>Or</item>
-        <item>Netanel</item>
-        <item>Danilla</item>
+        <item>Daneilla</item>
     </string-array>
 
 

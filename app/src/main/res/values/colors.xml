@@ -2,5 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple_700">#6200EE</color>
+    <color name="bg_warm">#FFF9F5</color>
+    <color name="accent_orange">#E67E22</color>
+    <color name="soft_peach">#FFECDF</color>
+    <color name="dark_brown">#2C1E14</color>
+    <color name="text_secondary">#757575</color>
+    <color name="accent_black">#1A1A1A</color>
+    <color name="purple_700">#1A1A1A</color>
 </resources>
