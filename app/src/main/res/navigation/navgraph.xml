@@ -96,14 +96,4 @@
             app:destination="@id/clientHomeFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/clientLoginFragment"
-        android:name="com.example.bookme.ClientLoginFragment"
-        android:label="fragment_client_login"
-        tools:layout="@layout/fragment_client_login">
-        <action
-            android:id="@+id/action_clientLoginFragment_to_clientHomeFragment"
-            app:destination="@id/clientHomeFragment" />
-    </fragment>
-
 </navigation>
