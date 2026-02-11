@@ -67,6 +67,15 @@
                     android:letterSpacing="0.02"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium" />
+
+                <Button
+                    android:id="@+id/btnCancelAppointmentHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel Appointment"
+                    android:textColor="#F44336"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:visibility="gone" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

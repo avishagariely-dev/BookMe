@@ -6,18 +6,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-// ה-Imports החדשים עבור Firebase
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class ClientHomeFragment extends Fragment {
+
+    private String currentAppointmentId = null; // משתנה לשמירת ה-ID של התור הנוכחי
 
     public ClientHomeFragment() {}
 
@@ -30,73 +38,121 @@ public class ClientHomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. חיבור רכיבי ה-UI
         TextView tvWelcome = view.findViewById(R.id.tvWelcome);
         TextView tvNextAppointmentDate = view.findViewById(R.id.tvNextAppointmentDate);
+        Button btnCancel = view.findViewById(R.id.btnCancelAppointmentHome); // הכפתור החדש
 
-        // 2. שליפת הפרטים מה-SharedPreferences
         SharedPreferences sharedPref = getActivity().getSharedPreferences("BookMePrefs", Context.MODE_PRIVATE);
         String fullName = sharedPref.getString("user_name", "Guest");
         String userPhone = sharedPref.getString("user_phone", "").trim();
 
-        // עדכון ברכת שלום
         if (tvWelcome != null) {
             tvWelcome.setText("Hello, " + fullName);
         }
 
-        // 3. לוגיקת בדיקת תורים ב-Firebase
-        if (tvNextAppointmentDate != null) {
-            if (userPhone.isEmpty()) {
-                tvNextAppointmentDate.setText("אין לך תורים קרובים");
-            } else {
-                fetchNextAppointment(userPhone, tvNextAppointmentDate);
-            }
+        // שליפת התור והצגת כפתור הביטול במידת הצורך
+        if (userPhone.isEmpty()) {
+            tvNextAppointmentDate.setText("אין לך תורים קרובים");
+        } else {
+            fetchNextAppointment(userPhone, tvNextAppointmentDate, btnCancel);
         }
 
-        // 4. הגדרת הניווט
         view.findViewById(R.id.cardToBook).setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_clientHomeFragment_to_clientBookFragment));
     }
 
-    /**
-     * פונקציה לשליפת התור מ-Firestore
-     */
-    private void fetchNextAppointment(String phone, TextView targetView) {
-        com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+    private void fetchNextAppointment(String phone, TextView targetView, Button btnCancel) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("appointments") // אוסף appointments כפי שמופיע ב-Firebase
+        db.collection("appointments")
                 .whereEqualTo("clientPhone", phone.trim())
+                .whereEqualTo("status", "BOOKED") // מוודא שזה תור פעיל
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                        for (com.google.firebase.firestore.QueryDocumentSnapshot document : task.getResult()) {
-                            String dateStr = document.getString("date"); // למשל "12/02/2026"
-                            String time = document.getString("time");   // למשל "15:00"
-                            String service = document.getString("serviceType"); // למשל "Highlights"
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            currentAppointmentId = document.getId(); // שמירת ה-ID למחיקה מאוחרת
 
-                            try {
-                                // 1. הפיכת מחרוזת התאריך לאובייקט Date
-                                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.ENGLISH);
-                                java.util.Date date = sdf.parse(dateStr);
+                            // עיבוד התצוגה (הקוד הקיים שלך)
+                            String dateStr = document.getString("date");
+                            String time = document.getString("time");
+                            String service = document.getString("serviceType");
 
-                                // 2. חילוץ שם היום (למשל Monday)
-                                java.text.SimpleDateFormat dayFormat = new java.text.SimpleDateFormat("EEEE", java.util.Locale.ENGLISH);
-                                String dayName = dayFormat.format(date);
+                            targetView.setText(dateStr + " at " + time + "\nfor " + service);
 
-                                // 3. בניית המחרוזת בשתי שורות לפי התבנית שביקשת (\n יורד שורה)
-                                String formattedText = dayName + ", " + dateStr + " at " + time + "\n" + "for " + service;
-
-                                targetView.setText(formattedText);
-
-                            } catch (Exception e) {
-                                // במקרה של שגיאה בפורמט התאריך, נציג ללא היום
-                                targetView.setText(dateStr + " at " + time + "\n" + "for " + service);
-                            }
+                            // הצגת כפתור הביטול והגדרת הפעולה שלו
+                            btnCancel.setVisibility(View.VISIBLE);
+                            btnCancel.setOnClickListener(v -> confirmAndCancel(currentAppointmentId, targetView, btnCancel));
                             break;
                         }
                     } else {
                         targetView.setText("You have no upcoming appointments");
+                        btnCancel.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void confirmAndCancel(String appointmentId, TextView targetView, Button btnCancel) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Cancel Appointment")
+                .setMessage("Are you sure you want to cancel this appointment?")
+                .setPositiveButton("Yes, Cancel", (dialog, which) -> {
+                    deleteAppointment(appointmentId, targetView, btnCancel);
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteAppointment(String appointmentId, TextView targetView, Button btnCancel) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("appointments").document(appointmentId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    // עדכון ה-UI במסך הבית
+                    targetView.setText("You have no upcoming appointments");
+                    btnCancel.setVisibility(View.GONE);
+                    currentAppointmentId = null;
+
+                    // הצגת הדיאלוג המעוצב
+                    showSuccessDialog();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error cancelling: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showSuccessDialog() {
+        // יצירת הבנאי לדיאלוג
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+
+        // טעינת העיצוב מה-XML
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.confirmation, null);
+        builder.setView(dialogView);
+
+        final androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+
+        // הגדרת רקע שקוף כדי שהפינות המעוגלות של ה-CardView יראו היטב
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // קישור הרכיבים בתוך הדיאלוג ועדכון הטקסט
+        TextView tvTitle = dialogView.findViewById(R.id.tvConfirmationTitle);
+        TextView tvDetails = dialogView.findViewById(R.id.tvConfirmationDetails);
+        Button btnClose = dialogView.findViewById(R.id.btnConfirmClose);
+
+        if (tvTitle != null) {
+            tvTitle.setText("Appointment Cancelled");
+        }
+        if (tvDetails != null) {
+            tvDetails.setText("Your appointment has been successfully removed from our system.");
+        }
+
+        if (btnClose != null) {
+            btnClose.setOnClickListener(v -> alertDialog.dismiss());
+        }
+
+        alertDialog.show();
     }
 }
