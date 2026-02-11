@@ -17,6 +17,9 @@ import com.google.firebase.firestore.Query;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import com.google.firebase.firestore.DocumentSnapshot;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BarberHomeFragment extends Fragment {
 
@@ -54,21 +57,27 @@ public class BarberHomeFragment extends Fragment {
     }
 
     private void loadTodayAppointments(String date) {
-        // השאילתה מול פיירבייס עם מיון לפי שעה
         db.collection("appointments")
                 .whereEqualTo("barberId", Session.barberName)
                 .whereEqualTo("date", date)
-                .orderBy("time", Query.Direction.ASCENDING) // דורש אינדקס מורכב!
+                .orderBy("time", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener(qs -> {
-                    // עדכון הרשימה במידה ונמצאו תורים
-                    adapter.setAppointments(qs.toObjects(Appointment.class));
+                    List<Appointment> list = new ArrayList<>();
+                    for (DocumentSnapshot doc : qs.getDocuments()) {
+                        Appointment a = doc.toObject(Appointment.class);
+                        if (a != null) {
+                            a.setDocId(doc.getId());
+                            list.add(a);
+                        }
+                    }
+                    adapter.setAppointments(list);
+
                     if (qs.isEmpty()) {
                         Log.d("FIRESTORE", "No appointments found for " + Session.barberName + " on " + date);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // הדפסת שגיאה במקרה של בעיית אינדקס או הרשאות
                     Log.e("FIRESTORE_ERROR", "Error: " + e.getMessage());
                     Toast.makeText(getContext(), "Error loading: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });

@@ -6,47 +6,110 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Button android:id="@+id/btnPickDate"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btnPickDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Pick a date" />
 
-    <TextView android:id="@+id/tvSelectedDateCalender"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Selected Date: -" android:gravity="center" android:padding="8dp" />
+    <TextView
+        android:id="@+id/tvSelectedDateCalender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="Selected Date: -" />
 
-    <LinearLayout android:id="@+id/layoutActions"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:visibility="gone" android:weightSum="2">
-        <Button android:id="@+id/btnViewAppointments"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="Show Schedule" android:layout_margin="4dp"/>
-        <Button android:id="@+id/btnOpenBlockUI"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="Block Time" android:layout_margin="4dp"
-            android:backgroundTint="#673AB7"/>
+    <TextView
+        android:id="@+id/tvEmptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="No appointments for this date."
+        android:textColor="#777777"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layoutActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/btnViewAppointments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="Show Schedule" />
+
+        <Button
+            android:id="@+id/btnOpenBlockUI"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:text="Block Time" />
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView android:id="@+id/layoutBlockingUI"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        app:cardCornerRadius="8dp" android:layout_marginTop="8dp" android:visibility="gone">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="12dp">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/layoutBlockingUI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchAllDay" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:text="Block entire day?" />
-            <LinearLayout android:id="@+id/layoutTimePicker"
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <Button android:id="@+id/btnStartTime" android:layout_width="0dp"
-                    android:layout_height="wrap_content" android:layout_weight="1" android:text="Start" />
-                <Button android:id="@+id/btnEndTime" android:layout_width="0dp"
-                    android:layout_height="wrap_content" android:layout_weight="1" android:text="End" />
+                android:id="@+id/switchAllDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Block entire day?" />
+
+            <LinearLayout
+                android:id="@+id/layoutTimePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnStartTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Start" />
+
+                <Button
+                    android:id="@+id/btnEndTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="End" />
             </LinearLayout>
-            <Button android:id="@+id/btnSubmitBlock" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:text="Confirm Block" android:backgroundTint="#D32F2F" />
+
+            <Button
+                android:id="@+id/btnSubmitBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#D32F2F"
+                android:text="Confirm Block" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvAppointments"
-        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
-        android:layout_marginTop="12dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAppointments"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1" />
+
 </LinearLayout>
