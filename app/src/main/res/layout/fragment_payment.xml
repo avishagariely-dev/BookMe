@@ -1,87 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".PaymentFragment" >
+    android:background="@color/bg_warm">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finalize Booking"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/dark_brown"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please review your details below"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp"
+            android:layout_marginBottom="32dp" />
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
 
-            <TextView
-                android:id="@+id/details"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enter you details"
-                android:textSize="20sp" />
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/card_bg">
 
-            <EditText
-                android:id="@+id/Name"
+                <TextView
+                    android:id="@+id/tvAppointmentSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loading details..."
+                    android:textSize="18sp"
+                    android:textColor="@color/dark_brown"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:focusable="true"
-                android:hint="Full Name"
-                android:inputType="text"
-                android:textSize="20sp" />
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/card_bg">
 
-            <EditText
-                android:id="@+id/editTextPhone"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="YOUR INFORMATION"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/etFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:importantForAutofill="no"
+                    android:hint="Full Name"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@android:drawable/ic_menu_edit"
+                    android:drawablePadding="12dp"
+                    android:inputType="textPersonName"
+                    android:layout_marginBottom="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/soft_peach"
+                    android:layout_marginBottom="16dp"/>
+
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:importantForAutofill="no"
+                    android:hint="Phone Number"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@android:drawable/ic_menu_call"
+                    android:drawablePadding="12dp"
+                    android:inputType="phone"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="32dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:focusable="true"
-                android:hint="Phone"
-                android:inputType="phone"
-                android:textSize="20sp" />
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/card_bg">
 
-            <EditText
-                android:id="@+id/CardNumber"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:focusable="true"
-                android:hint="Card number"
-                android:inputType="number"
-                android:minHeight="48dp"
-                android:padding="12dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PAYMENT METHOD"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="16dp"/>
 
-            <EditText
-                android:id="@+id/CVC"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="CVC"
-                android:inputType="number"
-                android:padding="12dp"
-                android:minHeight="48dp"/>
+                <EditText
+                    android:id="@+id/etCardNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:importantForAutofill="no"
+                    android:hint="Card Number (16 digits)"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@android:drawable/ic_menu_edit"
+                    android:drawablePadding="12dp"
+                    android:inputType="number"
+                    android:maxLength="16"/>
 
-            <EditText
-                android:id="@+id/Expiry"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:focusable="false"
-                android:hint="Expiry"
-                android:inputType="none"
-                android:padding="12dp"
-                android:minHeight="48dp"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/soft_peach"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"/>
 
-            <Button
-                android:id="@+id/ButtonConfirm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Next"
-                android:textSize="20sp"
-                android:padding="12dp"
-                android:minHeight="48dp"/>
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/etExpiry"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:importantForAutofill="no"
+                        android:layout_weight="1"
+                        android:hint="MM/YY"
+                        android:background="@android:color/transparent"
+                        android:inputType="number"
+                        android:maxLength="5"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="30dp"
+                        android:background="@color/soft_peach"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <EditText
+                        android:id="@+id/etCVC"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:importantForAutofill="no"
+                        android:layout_weight="1"
+                        android:hint="CVC"
+                        android:background="@android:color/transparent"
+                        android:inputType="numberPassword"
+                        android:maxLength="3"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/btn_modern"
+            app:backgroundTint="@null"
+            android:text="CONFIRM APPOINTMENT"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

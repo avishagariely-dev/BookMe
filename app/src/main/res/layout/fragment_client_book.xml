@@ -1,53 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ClientBookFragment" >
+    android:background="@color/bg_warm"
+    tools:context=".ClientBookFragment">
 
-    <Spinner
-        android:id="@+id/HaircutList"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/HaircutList"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        android:spinnerMode="dropdown" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <Spinner
-        android:id="@+id/BarberList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/BarberList"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        android:spinnerMode="dropdown" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Book Your Session"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/dark_brown"
+            android:layout_marginTop="16dp" />
 
-    <EditText
-        android:id="@+id/DatePicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Select a Date"
-        android:focusable="false"
-        android:clickable="true"
-        android:padding="12dp"
-        android:minHeight="48dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your preferred style and time"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp"
+            android:layout_marginBottom="32dp" />
 
-    <Spinner
-        android:id="@+id/TimePickerSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:padding="12dp"
-        android:spinnerMode="dropdown" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
 
-    <Button
-        android:id="@+id/ButtonToPay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Next"
-        android:padding="12dp"
-        android:minHeight="48dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg">
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SELECT SERVICE"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/HaircutList"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHOOSE BARBER"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/BarberList"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PICK DATE"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/DatePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Click to select date"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                    android:drawablePadding="12dp"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="32dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/card_bg">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AVAILABLE SLOTS"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/TimePickerSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/ButtonToPay"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/btn_modern"
+            app:backgroundTint="@null"
+            android:text="CONTINUE TO PAYMENT"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:letterSpacing="0.1" />
+
+    </LinearLayout>
+</ScrollView>

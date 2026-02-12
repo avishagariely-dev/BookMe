@@ -1,32 +1,37 @@
 package com.example.bookme;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import java.util.Calendar;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ClientBookFragment extends Fragment {
 
@@ -54,20 +59,43 @@ public class ClientBookFragment extends Fragment {
         final EditText datePicker = view.findViewById(R.id.DatePicker);
         final Spinner barberSpinner = view.findViewById(R.id.BarberList);
         final Spinner haircutSpinner = view.findViewById(R.id.HaircutList);
+
+        // הגדרת עיצוב ה-Spinners
+        setupSpinner(haircutSpinner, R.array.HaircutList);
+        setupSpinner(barberSpinner, R.array.BarberList);
+        timePickerSpinner.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
+
         Button buttonToPay = view.findViewById(R.id.ButtonToPay);
 
+        // שימוש ב-MaterialDatePicker החדש והמעוצב
         datePicker.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
-            DatePickerDialog dp = new DatePickerDialog(requireContext(), (picker, y, m, d) -> {
-                selectedDate = String.format("%02d/%02d/%04d", d, (m + 1), y);
+            // הגדרת מגבלות: חסימת תאריכים בעבר
+            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+            constraintsBuilder.setValidator(DateValidatorPointForward.now());
+
+            // יצירת הלוח שנה עם הסטייל הכתום שהגדרת
+            MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select Appointment Date")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .setCalendarConstraints(constraintsBuilder.build())
+                    .setTheme(R.style.CustomMaterialCalendar)
+                    .build();
+
+            materialDatePicker.show(getParentFragmentManager(), "DATE_PICKER");
+
+            materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+                // המרה ממילי-שניות לפורמט dd/MM/yyyy
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                selectedDate = sdf.format(new Date(selection));
+
                 datePicker.setText(selectedDate);
 
+                // עדכון השעות עבור הספר הנבחר
                 if (barberSpinner.getSelectedItemPosition() > 0) {
                     filterTakenSlots(barberSpinner.getSelectedItem().toString(), selectedDate);
                 }
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-            dp.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-            dp.show();
+            });
         });
 
         buttonToPay.setOnClickListener(v -> {
@@ -98,7 +126,6 @@ public class ClientBookFragment extends Fragment {
         });
     }
 
-    // סינון שעות: מסיר תורים קיימים וגם חסימות של הספר
     private void filterTakenSlots(String barberId, String date) {
         List<String> availableSlots = getWorkingHours(date);
 
@@ -116,14 +143,11 @@ public class ClientBookFragment extends Fragment {
                             break;
                         }
 
-                        // תיקון הטווח: פירוק המחרוזת "13:00 - 16:00" לזמן התחלה וסיום
                         if (time.contains("-")) {
                             String[] parts = time.split(" - ");
                             if (parts.length == 2) {
-                                String startTime = parts[0]; // "13:00"
-                                String endTime = parts[1];   // "16:00"
-
-                                // מסיר כל שעה שגדולה או שווה להתחלה וקטנה או שווה לסוף
+                                String startTime = parts[0];
+                                String endTime = parts[1];
                                 availableSlots.removeIf(slot ->
                                         slot.compareTo(startTime) >= 0 && slot.compareTo(endTime) <= 0);
                             }
@@ -132,8 +156,9 @@ public class ClientBookFragment extends Fragment {
                         }
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                            android.R.layout.simple_spinner_item, availableSlots);
+                    // שימוש בעיצוב ה-Spinner המותאם אישית
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, availableSlots);
+                    adapter.setDropDownViewResource(R.layout.spinner_item);
                     timePickerSpinner.setAdapter(adapter);
                 });
     }
@@ -161,7 +186,6 @@ public class ClientBookFragment extends Fragment {
         return slots;
     }
 
-    // פונקציה שבודקת אם הספר מחק תור ללקוח ומציגה הודעה
     private void checkForCancellations() {
         SharedPreferences prefs = getActivity().getSharedPreferences("BookMePrefs", Context.MODE_PRIVATE);
         String userPhone = prefs.getString("user_phone", "");
@@ -175,16 +199,22 @@ public class ClientBookFragment extends Fragment {
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         String message = doc.getString("message");
 
-                        // הקפצת הודעה ללקוח
                         new AlertDialog.Builder(requireContext())
                                 .setTitle("Appointment Update")
                                 .setMessage(message)
                                 .setPositiveButton("OK", (dialog, which) -> {
-                                    // מחיקת ההתראה אחרי שהלקוח ראה אותה
                                     db.collection("notifications").document(doc.getId()).delete();
                                 })
                                 .show();
                     }
                 });
+    }
+
+    private void setupSpinner(Spinner spinner, int arrayResourceId) {
+        String[] items = getResources().getStringArray(arrayResourceId);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, items);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setAdapter(adapter);
+        spinner.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
     }
 }

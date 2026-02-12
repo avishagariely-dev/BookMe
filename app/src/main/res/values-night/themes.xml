@@ -1,7 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.BookMe" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/accent_orange</item>
+
     </style>
+
+    <style name="Theme.BookMe" parent="Base.Theme.BookMe" />
+
+    <style name="CustomMaterialCalendar" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_orange</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">#1A1A1A</item> <item name="colorOnSurface">@color/white</item> </style>
 </resources>

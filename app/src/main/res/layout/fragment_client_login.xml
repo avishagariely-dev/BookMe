@@ -53,6 +53,7 @@
                     android:id="@+id/etClientName"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:importantForAutofill="no"
                     android:hint="Full Name"
                     android:inputType="textPersonName"
                     android:background="@android:color/transparent"
@@ -69,10 +70,12 @@
                     android:id="@+id/etClientPhone"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:hint="Phone Number"
+                    android:importantForAutofill="no"
+                    android:hint="Phone Number (e.g. 0501234567)"
                     android:inputType="phone"
                     android:background="@android:color/transparent"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:maxLength="10"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
