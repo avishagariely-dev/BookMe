@@ -18,9 +18,9 @@ public class BarberLoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_barber_login, container, false);
 
-        EditText emailEt = view.findViewById(R.id.BarberEmail);
-        EditText passwordEt = view.findViewById(R.id.BarberPassword);
-        Button loginBtn = view.findViewById(R.id.Button_BarberLogin);
+        EditText emailEt = view.findViewById(R.id.etBarberEmail);
+        EditText passwordEt = view.findViewById(R.id.etBarberPassword);
+        Button loginBtn = view.findViewById(R.id.btnBarberLogin);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
@@ -39,9 +39,10 @@ public class BarberLoginFragment extends Fragment {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(result -> {
 
-                        // ממירים אימייל -> שם ספר בדיוק כמו ב-Firestore
+                        // 1. הגדרת שם הספר בסשן
                         Session.barberName = mapEmailToBarberName(email);
 
+                        // 2. בדיקה אם המשתמש הוא אכן ספר
                         if (Session.barberName == null) {
                             Toast.makeText(getContext(),
                                     "This user is not defined as a barber",
@@ -50,8 +51,13 @@ public class BarberLoginFragment extends Fragment {
                             return;
                         }
 
-                        NavHostFragment.findNavController(BarberLoginFragment.this)
-                                .navigate(R.id.action_barberLoginFragment_to_barberHomeFragment);
+                        // 3. בדיקת הבטיחות - כאן הוספנו את ה-if כדי למנוע את הקריסה
+                        if (NavHostFragment.findNavController(BarberLoginFragment.this)
+                                .getCurrentDestination().getId() == R.id.barberLoginFragment) {
+
+                            NavHostFragment.findNavController(BarberLoginFragment.this)
+                                    .navigate(R.id.action_barberLoginFragment_to_barberHomeFragment);
+                        }
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(),

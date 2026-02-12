@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,48 +38,53 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position) {
         Appointment appointment = appointmentList.get(position);
 
+        // תיקון: שימוש ב-R.color במקום R.id
+        int orange = ContextCompat.getColor(holder.itemView.getContext(), R.color.accent_orange);
+        int darkBrown = ContextCompat.getColor(holder.itemView.getContext(), R.color.dark_brown);
+        int secondaryText = ContextCompat.getColor(holder.itemView.getContext(), R.color.text_secondary);
+
         holder.tvTime.setText(appointment.getTime());
-        holder.tvStatus.setText(appointment.getType()); // סוג תור
+        holder.tvTime.setTextColor(orange);
 
         boolean blocked = appointment.isBlocked() || "BLOCKED".equals(appointment.getClientName());
 
         if (blocked) {
             holder.tvClientName.setText("BLOCKED");
-            holder.tvClientName.setTextSize(14f);
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFEBEE")); // אדמדם
-            holder.tvClientName.setTextColor(Color.RED);
-            holder.btnAction.setText("Unblock");
+            holder.tvClientName.setTextColor(Color.parseColor("#C0392B"));
+
+            // הסתרת הסטטוס "Closed" כשהתור חסום
+            holder.tvStatus.setVisibility(View.GONE);
+
+            // שימוש ב-ID החדש שהוספנו ב-XML
+            holder.itemView.findViewById(R.id.cardMainLayout).setBackgroundColor(Color.parseColor("#FFF5F5"));
+
+            holder.btnAction.setText("UNBLOCK");
         } else {
             holder.tvClientName.setText(appointment.getClientName());
-            holder.itemView.setBackgroundColor(Color.WHITE);
-            holder.tvClientName.setTextColor(Color.BLACK);
-            holder.btnAction.setText("Cancel");
+            holder.tvClientName.setTextColor(darkBrown);
+
+            holder.tvStatus.setVisibility(View.VISIBLE);
+            holder.tvStatus.setText(appointment.getType());
+            holder.tvStatus.setTextColor(secondaryText);
+
+            holder.itemView.findViewById(R.id.cardMainLayout).setBackgroundColor(Color.WHITE);
+
+            holder.btnAction.setText("CANCEL");
         }
 
+        // פונקציית המחיקה/ביטול חסימה
         holder.btnAction.setOnClickListener(v -> {
             String docId = appointment.getDocId();
-            String clientPhone = appointment.getClientPhone();
-            String date = appointment.getDate();
-
             if (docId == null) return;
 
-            // 1. אם זה תור של לקוח (לא חסימה), ניצור התראה לפני המחיקה
-            if (!appointment.isBlocked() && clientPhone != null) {
-                java.util.Map<String, Object> notification = new java.util.HashMap<>();
-                notification.put("phone", clientPhone);
-                notification.put("message", "Your appointment on " + date + " was cancelled by the barber.");
-                notification.put("timestamp", System.currentTimeMillis());
-
-                db.collection("notifications").add(notification);
-            }
-
-            // 2. עכשיו מוחקים את התור
-            db.collection("appointments").document(docId)
-                    .delete()
+            db.collection("appointments").document(docId).delete()
                     .addOnSuccessListener(unused -> {
-                        Toast.makeText(v.getContext(), appointment.isBlocked() ? "Unblocked" : "Cancelled & Notified", Toast.LENGTH_SHORT).show();
-                        appointmentList.remove(holder.getAdapterPosition());
-                        notifyItemRemoved(holder.getAdapterPosition());
+                        int currentPos = holder.getAdapterPosition();
+                        if (currentPos != RecyclerView.NO_POSITION) {
+                            appointmentList.remove(currentPos);
+                            notifyItemRemoved(currentPos);
+                            Toast.makeText(v.getContext(), blocked ? "Unblocked" : "Cancelled", Toast.LENGTH_SHORT).show();
+                        }
                     });
         });
     }

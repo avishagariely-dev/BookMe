@@ -1,115 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <Button
-        android:id="@+id/btnPickDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pick a date" />
-
-    <TextView
-        android:id="@+id/tvSelectedDateCalender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="Selected Date: -" />
-
-    <TextView
-        android:id="@+id/tvEmptyMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="No appointments for this date."
-        android:textColor="#777777"
-        android:visibility="gone" />
+    android:background="@color/bg_warm">
 
     <LinearLayout
-        android:id="@+id/layoutActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:weightSum="2">
+        android:orientation="vertical"
+        android:paddingBottom="40dp">
 
-        <Button
-            android:id="@+id/btnViewAppointments"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:text="Show Schedule" />
-
-        <Button
-            android:id="@+id/btnOpenBlockUI"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
-            android:text="Block Time" />
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/layoutBlockingUI"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        app:cardCornerRadius="8dp">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="32dp"
+            android:paddingBottom="16dp">
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchAllDay"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Block entire day?" />
+                android:text="Schedule"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_brown" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvTitle"
+                android:text="Review your daily log and manage time slots"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_scissors"
+                app:tint="@color/accent_orange" />
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnPickDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp">
             <LinearLayout
-                android:id="@+id/layoutTimePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnStartTime"
-                    android:layout_width="0dp"
+                android:padding="20dp"
+                android:gravity="center"
+                android:background="@color/white">
+                <TextView
+                    android:id="@+id/tvSelectedDateCalender"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Start" />
-
-                <Button
-                    android:id="@+id/btnEndTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="End" />
+                    android:text="Select Date"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/dark_brown" />
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:weightSum="2">
             <Button
-                android:id="@+id/btnSubmitBlock"
+                android:id="@+id/btnViewAppointments"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="VIEW LOG"
+                android:background="@drawable/btn_outline"
+                android:textColor="@color/accent_orange"
+                app:backgroundTint="@null" />
+            <Button
+                android:id="@+id/btnOpenBlockUI"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="BLOCK TIME"
+                android:background="@drawable/btn_outline"
+                android:textColor="@color/accent_orange"
+                app:backgroundTint="@null" />
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutBlockingUI"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:cardCornerRadius="24dp"
+            android:visibility="gone">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#D32F2F"
-                android:text="Confirm Block" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:orientation="vertical"
+                android:padding="24dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAppointments"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:layout_weight="1" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchAllDay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Block Entire Day"
+                    android:textColor="@color/dark_brown"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="20dp"/>
 
-</LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layoutTimePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/btnPickStart"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/card_bg"
+                        android:backgroundTint="@color/bg_warm"
+                        android:padding="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="START" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/dark_brown"/>
+                        <TextView android:id="@+id/tvStartTime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textSize="16sp" android:textColor="@color/accent_orange" android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnPickEnd"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/card_bg"
+                        android:backgroundTint="@color/bg_warm"
+                        android:padding="16dp"
+                        android:layout_marginStart="8dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="END" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/dark_brown"/>
+                        <TextView android:id="@+id/tvEndTime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textSize="16sp" android:textColor="@color/accent_orange" android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnSubmitBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="24dp"
+                    android:text="CONFIRM BLOCK"
+                    android:background="@drawable/btn_modern"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvEmptyMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No appointments found for this date"
+            android:gravity="center"
+            android:padding="40dp"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+    </LinearLayout>
+</ScrollView>

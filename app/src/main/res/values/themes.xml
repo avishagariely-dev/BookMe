@@ -2,8 +2,8 @@
     <style name="Base.Theme.BookMe" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent_orange</item>
 
-        <item name="android:fontFamily">@font/lora</item>
-        <item name="fontFamily">@font/lora</item>
+<!--        <item name="android:fontFamily">@font/lora</item>-->
+<!--        <item name="fontFamily">@font/lora</item>-->
     </style>
 
     <style name="Theme.BookMe" parent="Base.Theme.BookMe" />
