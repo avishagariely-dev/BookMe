@@ -10,6 +10,7 @@ public class Appointment {
     private String type;
     private boolean isBlocked;
     private String docId;
+    private double price;
 
     public Appointment() {}
 
@@ -23,6 +24,7 @@ public class Appointment {
     public String getType() { return type; }
     public boolean isBlocked() { return isBlocked; }
     public String getDocId() { return docId; }
+    public double getPrice() { return price; }
 
     // Setters
 
@@ -35,4 +37,5 @@ public class Appointment {
     public void setType(String type) { this.type = type; }
     public void setBlocked(boolean blocked) { isBlocked = blocked; }
     public void setDocId(String docId) { this.docId = docId; }
+    public void setPrice(double price) { this.price = price; }
 }

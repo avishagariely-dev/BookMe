@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +39,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position) {
         Appointment appointment = appointmentList.get(position);
 
-        // תיקון: שימוש ב-R.color במקום R.id
         int orange = ContextCompat.getColor(holder.itemView.getContext(), R.color.accent_orange);
         int darkBrown = ContextCompat.getColor(holder.itemView.getContext(), R.color.dark_brown);
         int secondaryText = ContextCompat.getColor(holder.itemView.getContext(), R.color.text_secondary);
@@ -51,41 +51,45 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         if (blocked) {
             holder.tvClientName.setText("BLOCKED");
             holder.tvClientName.setTextColor(Color.parseColor("#C0392B"));
-
-            // הסתרת הסטטוס "Closed" כשהתור חסום
             holder.tvStatus.setVisibility(View.GONE);
-
-            // שימוש ב-ID החדש שהוספנו ב-XML
             holder.itemView.findViewById(R.id.cardMainLayout).setBackgroundColor(Color.parseColor("#FFF5F5"));
-
             holder.btnAction.setText("UNBLOCK");
         } else {
             holder.tvClientName.setText(appointment.getClientName());
             holder.tvClientName.setTextColor(darkBrown);
-
             holder.tvStatus.setVisibility(View.VISIBLE);
             holder.tvStatus.setText(appointment.getType());
             holder.tvStatus.setTextColor(secondaryText);
-
             holder.itemView.findViewById(R.id.cardMainLayout).setBackgroundColor(Color.WHITE);
-
             holder.btnAction.setText("CANCEL");
         }
 
-        // פונקציית המחיקה/ביטול חסימה
+        // הגדרת מאזין לחיצה עם דיאלוג אישור באנגלית
         holder.btnAction.setOnClickListener(v -> {
             String docId = appointment.getDocId();
             if (docId == null) return;
 
-            db.collection("appointments").document(docId).delete()
-                    .addOnSuccessListener(unused -> {
-                        int currentPos = holder.getAdapterPosition();
-                        if (currentPos != RecyclerView.NO_POSITION) {
-                            appointmentList.remove(currentPos);
-                            notifyItemRemoved(currentPos);
-                            Toast.makeText(v.getContext(), blocked ? "Unblocked" : "Cancelled", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            // יצירת הדיאלוג
+            new AlertDialog.Builder(holder.itemView.getContext())
+                    .setTitle("Confirm Action")
+                    .setMessage("Are you sure you want to proceed? This will notify the client and remove the slot.")
+                    .setPositiveButton("Yes, Proceed", (dialog, which) -> {
+                        // ביצוע המחיקה רק לאחר אישור
+                        db.collection("appointments").document(docId).delete()
+                                .addOnSuccessListener(unused -> {
+                                    int currentPos = holder.getAdapterPosition();
+                                    if (currentPos != RecyclerView.NO_POSITION) {
+                                        appointmentList.remove(currentPos);
+                                        notifyItemRemoved(currentPos);
+                                        Toast.makeText(v.getContext(), blocked ? "Unblocked" : "Cancelled", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        // סגירת הדיאלוג ללא ביצוע פעולה
+                        dialog.dismiss();
+                    })
+                    .show();
         });
     }
 

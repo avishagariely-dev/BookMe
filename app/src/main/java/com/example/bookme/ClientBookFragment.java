@@ -52,7 +52,6 @@ public class ClientBookFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         db = FirebaseFirestore.getInstance();
 
-        // בדיקת התראות על תורים שבוטלו ע"י הספר ברגע שהמסך עולה
         checkForCancellations();
 
         timePickerSpinner = view.findViewById(R.id.TimePickerSpinner);
@@ -60,20 +59,16 @@ public class ClientBookFragment extends Fragment {
         final Spinner barberSpinner = view.findViewById(R.id.BarberList);
         final Spinner haircutSpinner = view.findViewById(R.id.HaircutList);
 
-        // הגדרת עיצוב ה-Spinners
         setupSpinner(haircutSpinner, R.array.HaircutList);
         setupSpinner(barberSpinner, R.array.BarberList);
         timePickerSpinner.setPopupBackgroundResource(R.drawable.spinner_dropdown_bg);
 
         Button buttonToPay = view.findViewById(R.id.ButtonToPay);
 
-        // שימוש ב-MaterialDatePicker החדש והמעוצב
         datePicker.setOnClickListener(v -> {
-            // הגדרת מגבלות: חסימת תאריכים בעבר
             CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
             constraintsBuilder.setValidator(DateValidatorPointForward.now());
 
-            // יצירת הלוח שנה עם הסטייל הכתום שהגדרת
             MaterialDatePicker<Long> materialDatePicker = MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Select Appointment Date")
                     .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -84,14 +79,11 @@ public class ClientBookFragment extends Fragment {
             materialDatePicker.show(getParentFragmentManager(), "DATE_PICKER");
 
             materialDatePicker.addOnPositiveButtonClickListener(selection -> {
-                // המרה ממילי-שניות לפורמט dd/MM/yyyy
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                 selectedDate = sdf.format(new Date(selection));
-
                 datePicker.setText(selectedDate);
 
-                // עדכון השעות עבור הספר הנבחר
                 if (barberSpinner.getSelectedItemPosition() > 0) {
                     filterTakenSlots(barberSpinner.getSelectedItem().toString(), selectedDate);
                 }
@@ -109,7 +101,30 @@ public class ClientBookFragment extends Fragment {
             bundle.putString("date", selectedDate);
             bundle.putString("time", selectedTime);
             bundle.putString("barberId", barberSpinner.getSelectedItem().toString());
-            bundle.putString("type", haircutSpinner.getSelectedItem().toString());
+
+            // *** PRICE ADDITION START ***
+            String fullType = haircutSpinner.getSelectedItem().toString();
+            String cleanType = fullType.split("  -  ")[0]; // מסיר את המחיר מהטקסט אם הוא כבר קיים
+            int price = 0;
+            String typeLower = cleanType.toLowerCase();
+
+            if (typeLower.contains("men") && typeLower.contains("beard")) {
+                price = 100; // Men's Haircut + Beard
+            } else if (typeLower.contains("men")) {
+                price = 80;  // Men's Haircut
+            } else if (typeLower.contains("beard")) {
+                price = 30;  // Beard Only
+            } else if (typeLower.contains("women")) {
+                price = 150; // Women's Haircut
+            } else if (typeLower.contains("highlights") || typeLower.contains("straightening")) {
+                price = 500; // Highlights & Straightening
+            } else {
+                price = 100; // Default price
+            }
+
+            bundle.putString("type", cleanType);
+            bundle.putInt("price", price);
+            // *** PRICE ADDITION END ***
 
             Navigation.findNavController(view).navigate(R.id.action_clientBookFragment_to_paymentFragment, bundle);
         });
@@ -128,7 +143,6 @@ public class ClientBookFragment extends Fragment {
 
     private void filterTakenSlots(String barberId, String date) {
         List<String> availableSlots = getWorkingHours(date);
-
         db.collection("appointments")
                 .whereEqualTo("barberId", barberId)
                 .whereEqualTo("date", date)
@@ -137,26 +151,15 @@ public class ClientBookFragment extends Fragment {
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         String time = doc.getString("time");
                         if (time == null) continue;
-
-                        if (time.equals("All Day")) {
-                            availableSlots.clear();
-                            break;
-                        }
-
+                        if (time.equals("All Day")) { availableSlots.clear(); break; }
                         if (time.contains("-")) {
                             String[] parts = time.split(" - ");
                             if (parts.length == 2) {
-                                String startTime = parts[0];
-                                String endTime = parts[1];
-                                availableSlots.removeIf(slot ->
-                                        slot.compareTo(startTime) >= 0 && slot.compareTo(endTime) <= 0);
+                                String start = parts[0], end = parts[1];
+                                availableSlots.removeIf(slot -> slot.compareTo(start) >= 0 && slot.compareTo(end) <= 0);
                             }
-                        } else {
-                            availableSlots.remove(time);
-                        }
+                        } else { availableSlots.remove(time); }
                     }
-
-                    // שימוש בעיצוב ה-Spinner המותאם אישית
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, availableSlots);
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     timePickerSpinner.setAdapter(adapter);
@@ -170,17 +173,12 @@ public class ClientBookFragment extends Fragment {
             Calendar selectedCal = Calendar.getInstance();
             selectedCal.setTime(sdf.parse(selectedDate));
             Calendar now = Calendar.getInstance();
-
             int day = selectedCal.get(Calendar.DAY_OF_WEEK);
             if (day == Calendar.SATURDAY) return slots;
-
             int endHour = (day == Calendar.FRIDAY) ? 13 : 20;
             boolean isToday = (now.get(Calendar.YEAR) == selectedCal.get(Calendar.YEAR) && now.get(Calendar.DAY_OF_YEAR) == selectedCal.get(Calendar.DAY_OF_YEAR));
-
             for (int h = 8; h < endHour; h++) {
-                if (!isToday || h > now.get(Calendar.HOUR_OF_DAY)) {
-                    slots.add(String.format("%02d:00", h));
-                }
+                if (!isToday || h > now.get(Calendar.HOUR_OF_DAY)) { slots.add(String.format("%02d:00", h)); }
             }
         } catch (Exception e) { e.printStackTrace(); }
         return slots;
@@ -189,29 +187,29 @@ public class ClientBookFragment extends Fragment {
     private void checkForCancellations() {
         SharedPreferences prefs = getActivity().getSharedPreferences("BookMePrefs", Context.MODE_PRIVATE);
         String userPhone = prefs.getString("user_phone", "");
-
         if (userPhone.isEmpty()) return;
-
-        db.collection("notifications")
-                .whereEqualTo("phone", userPhone)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        String message = doc.getString("message");
-
-                        new AlertDialog.Builder(requireContext())
-                                .setTitle("Appointment Update")
-                                .setMessage(message)
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                    db.collection("notifications").document(doc.getId()).delete();
-                                })
-                                .show();
-                    }
-                });
+        db.collection("notifications").whereEqualTo("phone", userPhone).get().addOnSuccessListener(qs -> {
+            for (DocumentSnapshot doc : qs) {
+                new AlertDialog.Builder(requireContext()).setTitle("Appointment Update")
+                        .setMessage(doc.getString("message")).setPositiveButton("OK", (d, w) -> db.collection("notifications").document(doc.getId()).delete()).show();
+            }
+        });
     }
 
     private void setupSpinner(Spinner spinner, int arrayResourceId) {
         String[] items = getResources().getStringArray(arrayResourceId);
+        // *** PRICE ADDITION START ***
+        if (arrayResourceId == R.array.HaircutList) {
+            for (int i = 1; i < items.length; i++) {
+                int price = 0;
+                if (items[i].toLowerCase().contains("haircut")) price = 60;
+                else if (items[i].toLowerCase().contains("beard")) price = 40;
+                else if (items[i].toLowerCase().contains("straightening")) price = 150;
+                else price = 100;
+                items[i] = items[i] + "  -  ₪" + price;
+            }
+        }
+        // *** PRICE ADDITION END ***
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, items);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);
