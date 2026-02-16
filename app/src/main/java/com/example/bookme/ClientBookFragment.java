@@ -102,29 +102,27 @@ public class ClientBookFragment extends Fragment {
             bundle.putString("time", selectedTime);
             bundle.putString("barberId", barberSpinner.getSelectedItem().toString());
 
-            // *** PRICE ADDITION START ***
             String fullType = haircutSpinner.getSelectedItem().toString();
             String cleanType = fullType.split("  -  ")[0]; // מסיר את המחיר מהטקסט אם הוא כבר קיים
             int price = 0;
             String typeLower = cleanType.toLowerCase();
 
             if (typeLower.contains("men") && typeLower.contains("beard")) {
-                price = 100; // Men's Haircut + Beard
+                price = 100;
             } else if (typeLower.contains("men")) {
-                price = 80;  // Men's Haircut
+                price = 80;
             } else if (typeLower.contains("beard")) {
-                price = 30;  // Beard Only
+                price = 30;
             } else if (typeLower.contains("women")) {
-                price = 150; // Women's Haircut
+                price = 150;
             } else if (typeLower.contains("highlights") || typeLower.contains("straightening")) {
-                price = 500; // Highlights & Straightening
+                price = 500;
             } else {
-                price = 100; // Default price
+                price = 100;
             }
 
             bundle.putString("type", cleanType);
             bundle.putInt("price", price);
-            // *** PRICE ADDITION END ***
 
             Navigation.findNavController(view).navigate(R.id.action_clientBookFragment_to_paymentFragment, bundle);
         });
@@ -198,7 +196,6 @@ public class ClientBookFragment extends Fragment {
 
     private void setupSpinner(Spinner spinner, int arrayResourceId) {
         String[] items = getResources().getStringArray(arrayResourceId);
-        // *** PRICE ADDITION START ***
         if (arrayResourceId == R.array.HaircutList) {
             for (int i = 1; i < items.length; i++) {
                 int price = 0;
@@ -209,7 +206,6 @@ public class ClientBookFragment extends Fragment {
                 items[i] = items[i] + "  -  ₪" + price;
             }
         }
-        // *** PRICE ADDITION END ***
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, items);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(adapter);

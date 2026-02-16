@@ -64,17 +64,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             holder.btnAction.setText("CANCEL");
         }
 
-        // הגדרת מאזין לחיצה עם דיאלוג אישור באנגלית
         holder.btnAction.setOnClickListener(v -> {
             String docId = appointment.getDocId();
             if (docId == null) return;
 
-            // יצירת הדיאלוג
             new AlertDialog.Builder(holder.itemView.getContext())
                     .setTitle("Confirm Action")
                     .setMessage("Are you sure you want to proceed? This will notify the client and remove the slot.")
                     .setPositiveButton("Yes, Proceed", (dialog, which) -> {
-                        // ביצוע המחיקה רק לאחר אישור
                         db.collection("appointments").document(docId).delete()
                                 .addOnSuccessListener(unused -> {
                                     int currentPos = holder.getAdapterPosition();
@@ -86,7 +83,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                 });
                     })
                     .setNegativeButton("Cancel", (dialog, which) -> {
-                        // סגירת הדיאלוג ללא ביצוע פעולה
                         dialog.dismiss();
                     })
                     .show();

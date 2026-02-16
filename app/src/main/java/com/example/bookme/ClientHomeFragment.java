@@ -55,7 +55,7 @@ public class ClientHomeFragment extends Fragment {
 
         if (tvNextAppointmentDate != null) {
             if (userPhone.isEmpty()) {
-                tvNextAppointmentDate.setText("אין לך תורים קרובים");
+                tvNextAppointmentDate.setText("No upcoming appointments"); 
             } else {
                 fetchNextAppointment(userPhone, tvNextAppointmentDate, btnCancel);
             }

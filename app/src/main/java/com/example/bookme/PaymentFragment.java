@@ -48,11 +48,11 @@ public class PaymentFragment extends Fragment {
             time = getArguments().getString("time");
             barberId = getArguments().getString("barberId");
             type = getArguments().getString("type");
-            price = getArguments().getInt("price", 0); // *** PRICE ADDITION ***
+            price = getArguments().getInt("price", 0);
         }
 
         TextView tvSummary = view.findViewById(R.id.tvAppointmentSummary);
-        TextView tvPrice = view.findViewById(R.id.tvTotalPrice); // *** PRICE ADDITION ***
+        TextView tvPrice = view.findViewById(R.id.tvTotalPrice);
         EditText etName = view.findViewById(R.id.etFullName);
         EditText etPhone = view.findViewById(R.id.etPhone);
         EditText etCard = view.findViewById(R.id.etCardNumber);
@@ -61,7 +61,7 @@ public class PaymentFragment extends Fragment {
         Button btnConfirm = view.findViewById(R.id.btnConfirm);
 
         tvSummary.setText("Service: " + type + "\nBarber: " + barberId + "\nDate: " + date + "\nTime: " + time);
-        if (tvPrice != null) tvPrice.setText("₪" + price); // *** PRICE ADDITION ***
+        if (tvPrice != null) tvPrice.setText("₪" + price);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences("BookMePrefs", Context.MODE_PRIVATE);
         etName.setText(sharedPref.getString("user_name", ""));
@@ -104,7 +104,7 @@ public class PaymentFragment extends Fragment {
         appointment.put("time", time);
         appointment.put("barberId", barberId);
         appointment.put("type", type);
-        appointment.put("price", price); // *** PRICE ADDITION ***
+        appointment.put("price", price);
         appointment.put("status", "BOOKED");
         appointment.put("paymentInfo", "Ending in " + card.substring(card.length() - 4));
 

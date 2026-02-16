@@ -41,13 +41,12 @@ public class BarberHomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         db = FirebaseFirestore.getInstance();
 
-        // 1. עדכון השם האישי - "Welcome, Netanel" במקום "Barber"
         TextView tvWelcome = view.findViewById(R.id.tvWelcomeBarber);
         if (Session.barberName != null) {
             tvWelcome.setText("Welcome, " + Session.barberName);
         }
 
-        // 2. הגדרת ה-RecyclerView וה-Empty State
+        //  הגדרת ה-RecyclerView וה-Empty State
         RecyclerView rvToday = view.findViewById(R.id.rvTodayAppointments);
         tvEmptyMessage = view.findViewById(R.id.tvNoAppointments);
 
@@ -55,12 +54,12 @@ public class BarberHomeFragment extends Fragment {
         rvToday.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvToday.setAdapter(adapter);
 
-        // 3. כפתור מעבר ליומן (שימי לב ל-ID המעודכן מה-XML)
+        //  כפתור מעבר ליומן
         view.findViewById(R.id.btnOpenCalendar).setOnClickListener(v -> {
             Navigation.findNavController(view).navigate(R.id.action_barberHomeFragment_to_barberCalenderFragment);
         });
 
-        // 4. טעינת התורים להיום
+        //  טעינת התורים להיום
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String today = sdf.format(new Date());
         loadTodayAppointments(today);
@@ -83,7 +82,6 @@ public class BarberHomeFragment extends Fragment {
                     }
                     adapter.setAppointments(list);
 
-                    // עדכון התצוגה אם אין תורים (מונע את הבלוק הלבן הריק)
                     if (list.isEmpty()) {
                         tvEmptyMessage.setVisibility(View.VISIBLE);
                         Log.d("FIRESTORE", "No appointments for " + Session.barberName);

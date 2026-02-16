@@ -83,13 +83,11 @@ public class BarberCalenderFragment extends Fragment {
             selectedDateKey = formatDate(selection);
             tvSelectedDate.setText(selectedDateKey);
 
-            // מציג את הכפתורים (VIEW LOG / BLOCK TIME)
             layoutActions.setVisibility(View.VISIBLE);
 
-            // איפוס תצוגה - לא טוען את התורים אוטומטית!
             layoutBlockingUI.setVisibility(View.GONE);
             tvEmptyMessage.setVisibility(View.GONE);
-            adapter.setAppointments(new ArrayList<>()); // מנקה את הרשימה הקודמת
+            adapter.setAppointments(new ArrayList<>());
         });
     }
 

@@ -13,7 +13,6 @@ import android.widget.Button;
 public class WelcomeFragment extends Fragment {
 
     public WelcomeFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -30,7 +29,7 @@ public class WelcomeFragment extends Fragment {
         view.findViewById(R.id.btnClientLogin).setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_welcomeFragment_to_clientLoginFragment));
 
-        // חיבור כפתור ספר (כאן תוכלי לנווט למסך ה-Barber שלך)
+        // חיבור כפתור ספר
         view.findViewById(R.id.btnBarberLogin).setOnClickListener(v ->
                 Navigation.findNavController(v).navigate(R.id.action_welcomeFragment_to_barberLoginFragment));
     }

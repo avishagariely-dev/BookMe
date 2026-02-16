@@ -39,10 +39,10 @@ public class BarberLoginFragment extends Fragment {
             auth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(result -> {
 
-                        // 1. הגדרת שם הספר בסשן
+                        //  הגדרת שם הספר בסשן
                         Session.barberName = mapEmailToBarberName(email);
 
-                        // 2. בדיקה אם המשתמש הוא אכן ספר
+                        //  בדיקה אם המשתמש הוא אכן ספר
                         if (Session.barberName == null) {
                             Toast.makeText(getContext(),
                                     "This user is not defined as a barber",
@@ -51,7 +51,6 @@ public class BarberLoginFragment extends Fragment {
                             return;
                         }
 
-                        // 3. בדיקת הבטיחות - כאן הוספנו את ה-if כדי למנוע את הקריסה
                         if (NavHostFragment.findNavController(BarberLoginFragment.this)
                                 .getCurrentDestination().getId() == R.id.barberLoginFragment) {
 

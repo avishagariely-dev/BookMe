@@ -37,20 +37,20 @@ public class ClientLoginFragment extends Fragment {
             String name = etName.getText().toString().trim();
             String phone = etPhone.getText().toString().trim();
 
-            // 1. בדיקה שהשדות לא ריקים
+            //  בדיקה שהשדות לא ריקים
             if (name.isEmpty()) {
                 etName.setError("Name is required");
                 return;
             }
 
-            // 2. בדיקה קריטית: וודוא שהמספר מכיל בדיוק 10 ספרות
+            //  וודוא שהמספר מכיל בדיוק 10 ספרות
             if (phone.length() != 10) {
                 etPhone.setError("Phone number must be exactly 10 digits");
                 Toast.makeText(getContext(), "Please enter a valid 10-digit number", Toast.LENGTH_SHORT).show();
                 return; // עוצר את הביצוע ולא ממשיך ל-Firebase
             }
 
-            // 3. ולידציה מול Firestore
+            //  ולידציה מול Firestore
             db.collection("clients").document(phone).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
